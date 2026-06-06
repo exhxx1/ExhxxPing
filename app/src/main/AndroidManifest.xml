@@ -2,16 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.exhxx78.ping">
 
-    <!-- صلاحيات فحص الشبكة والإنترنت -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
-        android:label="Exhxx Ping Master"
+        android:label="فحص البنج"
         android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
-        
-        <activity android:name=".MainActivity" 
+
+        <activity android:name=".MainActivity"
                   android:exported="true"
                   android:windowSoftInputMode="adjustResize">
             <intent-filter>
