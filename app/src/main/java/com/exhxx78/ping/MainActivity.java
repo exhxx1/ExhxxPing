@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -17,7 +18,6 @@ public class MainActivity extends Activity {
     private boolean isPinging = false;
     private Thread pingThread;
     
-    // متغيرات الإحصائيات
     private int pingCount = 0;
     private int lostCount = 0;
     private double minPing = Double.MAX_VALUE;
@@ -32,9 +32,8 @@ public class MainActivity extends Activity {
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setPadding(40, 60, 40, 40);
-        layout.setBackgroundColor(Color.parseColor("#121212")); // وضع ليلي فخم
+        layout.setBackgroundColor(Color.parseColor("#121212"));
 
-        // العنوان والحقوق
         TextView title = new TextView(this);
         title.setText("Exhxx Ping Master 🌐\nالمطور: حيدر عادل | @exhxx78");
         title.setTextColor(Color.CYAN);
@@ -42,7 +41,6 @@ public class MainActivity extends Activity {
         title.setGravity(Gravity.CENTER);
         title.setPadding(0, 0, 0, 40);
 
-        // حقل الإدخال
         targetInput = new EditText(this);
         targetInput.setHint("اكتب IP أو الدومين (مثال: google.com)");
         targetInput.setHintTextColor(Color.GRAY);
@@ -51,7 +49,6 @@ public class MainActivity extends Activity {
         targetInput.setPadding(30, 30, 30, 30);
         targetInput.setTextSize(16);
 
-        // أزرار سريعة
         LinearLayout quickBtnLayout = new LinearLayout(this);
         quickBtnLayout.setOrientation(LinearLayout.HORIZONTAL);
         quickBtnLayout.setPadding(0, 20, 0, 20);
@@ -75,7 +72,6 @@ public class MainActivity extends Activity {
         quickBtnLayout.addView(btnGoogle);
         quickBtnLayout.addView(btnCloudflare);
 
-        // أزرار التحكم
         btnStart = new Button(this);
         btnStart.setText("▶️ بـدء الفـحـص");
         btnStart.setBackgroundColor(Color.parseColor("#43A047"));
@@ -87,10 +83,9 @@ public class MainActivity extends Activity {
         btnStop.setBackgroundColor(Color.parseColor("#E53935"));
         btnStop.setTextColor(Color.WHITE);
         btnStop.setPadding(0, 30, 0, 30);
-        btnStop.setEnabled(false); // معطل بالبداية
+        btnStop.setEnabled(false);
         btnStop.setAlpha(0.5f);
 
-        // شاشة عرض البنج المباشر
         livePingText = new TextView(this);
         livePingText.setText("0 ms");
         livePingText.setTextColor(Color.GRAY);
@@ -98,7 +93,6 @@ public class MainActivity extends Activity {
         livePingText.setGravity(Gravity.CENTER);
         livePingText.setPadding(0, 40, 0, 20);
 
-        // شاشة الإحصائيات الدقيقة
         statsText = new TextView(this);
         statsText.setText("جاهز للفحص...\nMin: 0 | Max: 0 | Avg: 0\nLoss: 0%");
         statsText.setTextColor(Color.WHITE);
@@ -107,7 +101,6 @@ public class MainActivity extends Activity {
         statsText.setBackgroundColor(Color.parseColor("#1E1E1E"));
         statsText.setPadding(30, 30, 30, 30);
 
-        // ترتيب العناصر بالشاشة
         layout.addView(title);
         layout.addView(targetInput);
         layout.addView(quickBtnLayout);
@@ -122,7 +115,6 @@ public class MainActivity extends Activity {
         scroll.addView(layout);
         setContentView(scroll);
 
-        // برمجة الأزرار
         btnGoogle.setOnClickListener(v -> targetInput.setText("8.8.8.8"));
         btnCloudflare.setOnClickListener(v -> targetInput.setText("1.1.1.1"));
         
@@ -137,7 +129,6 @@ public class MainActivity extends Activity {
             return;
         }
 
-        // تصفير الإحصائيات
         pingCount = 0; lostCount = 0;
         minPing = Double.MAX_VALUE; maxPing = 0; totalPing = 0;
         
@@ -152,7 +143,6 @@ public class MainActivity extends Activity {
                 double currentPing = -1;
                 
                 try {
-                    // أمر فحص بنج واحد مع انتظار ثانية واحدة
                     Process p = Runtime.getRuntime().exec("ping -c 1 -W 1 " + target);
                     BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
                     String line;
@@ -171,17 +161,15 @@ public class MainActivity extends Activity {
                 
                 runOnUiThread(() -> {
                     if (finalPing != -1) {
-                        // تحديث الإحصائيات
                         if (finalPing < minPing) minPing = finalPing;
                         if (finalPing > maxPing) maxPing = finalPing;
                         totalPing += finalPing;
                         
                         livePingText.setText(String.format("%.1f ms", finalPing));
                         
-                        // تغيير اللون حسب جودة البنج
-                        if (finalPing <= 80) livePingText.setTextColor(Color.parseColor("#43A047")); // ممتاز (أخضر)
-                        else if (finalPing <= 150) livePingText.setTextColor(Color.parseColor("#FDD835")); // متوسط (أصفر)
-                        else livePingText.setTextColor(Color.parseColor("#E53935")); // سيء (أحمر)
+                        if (finalPing <= 80) livePingText.setTextColor(Color.parseColor("#43A047"));
+                        else if (finalPing <= 150) livePingText.setTextColor(Color.parseColor("#FDD835"));
+                        else livePingText.setTextColor(Color.parseColor("#E53935"));
                         
                     } else {
                         lostCount++;
